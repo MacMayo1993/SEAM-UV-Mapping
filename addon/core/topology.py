@@ -38,7 +38,7 @@ class TopologicalUVAtlas:
         vertices: np.ndarray,
         triangles: np.ndarray,
         k_star: float = 0.721,
-        verbose: bool = False
+        verbose: bool = False,
     ):
         """
         Initialize and compute topological UV atlas.
@@ -90,11 +90,7 @@ class TopologicalUVAtlas:
             v0, v1, v2 = tri
 
             # Add edges (sorted for consistency)
-            edges = [
-                tuple(sorted([v0, v1])),
-                tuple(sorted([v1, v2])),
-                tuple(sorted([v2, v0]))
-            ]
+            edges = [tuple(sorted([v0, v1])), tuple(sorted([v1, v2])), tuple(sorted([v2, v0]))]
 
             for edge in edges:
                 self.edge_to_tris[edge].append(tri_idx)
@@ -114,8 +110,10 @@ class TopologicalUVAtlas:
         self.edges = list(self.edge_to_tris.keys())
 
         if self.verbose:
-            print(f"Built connectivity: {len(self.vertices)} vertices, "
-                  f"{len(self.triangles)} triangles, {len(self.edges)} edges")
+            print(
+                f"Built connectivity: {len(self.vertices)} vertices, "
+                f"{len(self.triangles)} triangles, {len(self.edges)} edges"
+            )
 
     def _compute_unwrapping(self):
         """Main algorithm: compute UV unwrapping with parity."""
@@ -138,18 +136,16 @@ class TopologicalUVAtlas:
         self.stitch_edges = self._select_stitch_edges(edge_scores)
 
         if self.verbose:
-            print(f"Selected {len(self.stitch_edges)} stitch edges "
-                  f"({100 * len(self.stitch_edges) / len(self.edges):.1f}%)")
+            print(
+                f"Selected {len(self.stitch_edges)} stitch edges "
+                f"({100 * len(self.stitch_edges) / len(self.edges):.1f}%)"
+            )
 
         # Step 4: Assign parity
         if self.verbose:
             print("Assigning parity...")
 
-        self.tri_parity = assign_parity(
-            self.triangles,
-            self.stitch_edges,
-            self.edge_to_tris
-        )
+        self.tri_parity = assign_parity(self.triangles, self.stitch_edges, self.edge_to_tris)
 
         # Convert to vertex parity (majority vote)
         self.vertex_parities = self._tri_to_vertex_parity()
@@ -158,11 +154,7 @@ class TopologicalUVAtlas:
         if self.verbose:
             print("Generating UV coordinates...")
 
-        self.vertex_uvs = generate_uvs(
-            self.vertices,
-            self.triangles,
-            self.vertex_parities
-        )
+        self.vertex_uvs = generate_uvs(self.vertices, self.triangles, self.vertex_parities)
 
         if self.verbose:
             print("UV unwrapping complete!")

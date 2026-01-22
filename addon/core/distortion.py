@@ -5,14 +5,11 @@ Provides functions to measure angle distortion, area distortion,
 and UV space coverage.
 """
 
-
 import numpy as np
 
 
 def compute_angle_distortion(
-    vertices: np.ndarray,
-    triangles: np.ndarray,
-    uvs: np.ndarray
+    vertices: np.ndarray, triangles: np.ndarray, uvs: np.ndarray
 ) -> dict[str, float]:
     """
     Compute angle distortion between 3D mesh and 2D UV layout.
@@ -61,15 +58,11 @@ def compute_angle_distortion(
     return {
         "mean": float(np.mean(angle_distortions)),
         "max": float(np.max(angle_distortions)),
-        "std": float(np.std(angle_distortions))
+        "std": float(np.std(angle_distortions)),
     }
 
 
-def compute_area_distortion(
-    vertices: np.ndarray,
-    triangles: np.ndarray,
-    uvs: np.ndarray
-) -> float:
+def compute_area_distortion(vertices: np.ndarray, triangles: np.ndarray, uvs: np.ndarray) -> float:
     """
     Compute area distortion (stretch) metric.
 
@@ -110,7 +103,7 @@ def compute_area_distortion(
     min_ratio = np.min(area_ratios)
 
     # Distortion = max / min
-    distortion = max_ratio / min_ratio if min_ratio > 1e-10 else float('inf')
+    distortion = max_ratio / min_ratio if min_ratio > 1e-10 else float("inf")
 
     return float(distortion)
 
@@ -144,9 +137,7 @@ def compute_uv_coverage(triangles: np.ndarray, uvs: np.ndarray) -> float:
 
 
 def compute_stretch_metric(
-    vertices: np.ndarray,
-    triangles: np.ndarray,
-    uvs: np.ndarray
+    vertices: np.ndarray, triangles: np.ndarray, uvs: np.ndarray
 ) -> dict[str, float]:
     """
     Compute stretch distortion (singular values of Jacobian).
@@ -190,13 +181,11 @@ def compute_stretch_metric(
     if not stretches:
         return {"mean": 1.0, "max": 1.0}
 
-    return {
-        "mean": float(np.mean(stretches)),
-        "max": float(np.max(stretches))
-    }
+    return {"mean": float(np.mean(stretches)), "max": float(np.max(stretches))}
 
 
 # Helper functions
+
 
 def _compute_angle(v1: np.ndarray, v2: np.ndarray) -> float:
     """Compute angle between two vectors."""

@@ -2,8 +2,9 @@
 Setup script for non-orientable UV unwrapping package.
 """
 
-from setuptools import setup, find_packages
 from pathlib import Path
+
+from setuptools import find_packages, setup
 
 # Read README for long description
 readme_file = Path(__file__).parent / "README.md"
@@ -41,7 +42,7 @@ setup(
             "pytest-cov>=4.1.0",
             "pytest-benchmark>=4.0.0",
             "black>=23.0.0",
-            "ruff>=0.0.290",
+            "ruff>=0.5.0",
             "mypy>=1.5.0",
             "matplotlib>=3.7.0",
         ],
