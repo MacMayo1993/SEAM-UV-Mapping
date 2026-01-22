@@ -5,16 +5,12 @@ Generates UV coordinates using spherical parameterization, then applies
 antipodal correction for negative-parity vertices.
 """
 
-
 import numpy as np
 from scipy.optimize import minimize
 
 
 def generate_uvs(
-    vertices: np.ndarray,
-    triangles: np.ndarray,
-    parities: np.ndarray,
-    method: str = "spherical"
+    vertices: np.ndarray, triangles: np.ndarray, parities: np.ndarray, method: str = "spherical"
 ) -> np.ndarray:
     """
     Generate UV coordinates with parity-aware correction.
@@ -74,10 +70,7 @@ def _spherical_parameterization(vertices: np.ndarray) -> np.ndarray:
     return uvs
 
 
-def _lscm_parameterization(
-    vertices: np.ndarray,
-    triangles: np.ndarray
-) -> np.ndarray:
+def _lscm_parameterization(vertices: np.ndarray, triangles: np.ndarray) -> np.ndarray:
     """
     Least Squares Conformal Maps (LSCM) parameterization.
 
@@ -97,10 +90,7 @@ def _lscm_parameterization(
 
 
 def optimize_uvs_for_distortion(
-    vertices: np.ndarray,
-    triangles: np.ndarray,
-    uvs_init: np.ndarray,
-    max_iter: int = 100
+    vertices: np.ndarray, triangles: np.ndarray, uvs_init: np.ndarray, max_iter: int = 100
 ) -> np.ndarray:
     """
     Optimize UV coordinates to minimize angle distortion.
@@ -116,6 +106,7 @@ def optimize_uvs_for_distortion(
     Returns:
         (N, 2) optimized UV coordinates
     """
+
     def conformal_energy(uvs_flat):
         uvs = uvs_flat.reshape(-1, 2)
         energy = 0.0
@@ -135,7 +126,7 @@ def optimize_uvs_for_distortion(
             J = np.column_stack([e1_2d, e2_2d])
 
             # Conformal energy (Frobenius norm of Jacobian deviation)
-            energy += np.linalg.norm(J - J.T)**2
+            energy += np.linalg.norm(J - J.T) ** 2
 
         return energy
 
@@ -143,9 +134,9 @@ def optimize_uvs_for_distortion(
     result = minimize(
         conformal_energy,
         uvs_init.flatten(),
-        method='L-BFGS-B',
+        method="L-BFGS-B",
         bounds=[(0, 1)] * (len(uvs_init) * 2),
-        options={'maxiter': max_iter}
+        options={"maxiter": max_iter},
     )
 
     return result.x.reshape(-1, 2)

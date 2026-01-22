@@ -10,20 +10,20 @@ class NonOrientablePanel(bpy.types.Panel):
 
     bl_label = "Non-Orientable UV"
     bl_idname = "UV_PT_non_orientable"
-    bl_space_type = 'IMAGE_EDITOR'
-    bl_region_type = 'UI'
-    bl_category = 'Non-Orientable'
+    bl_space_type = "IMAGE_EDITOR"
+    bl_region_type = "UI"
+    bl_category = "Non-Orientable"
 
     def draw(self, context):
         layout = self.layout
         obj = context.active_object
 
         # Title
-        layout.label(text="Seamless UV Unwrapping", icon='UV')
+        layout.label(text="Seamless UV Unwrapping", icon="UV")
 
         # Info box
         box = layout.box()
-        box.label(text="Eliminates seams via", icon='INFO')
+        box.label(text="Eliminates seams via", icon="INFO")
         box.label(text="non-orientable topology")
 
         layout.separator()
@@ -33,9 +33,7 @@ class NonOrientablePanel(bpy.types.Panel):
         col.label(text="Unwrap:")
 
         # Unwrap operator
-        col.operator("uv.non_orientable_unwrap",
-                                  text="Non-Orientable Unwrap",
-                                  icon='UV')
+        col.operator("uv.non_orientable_unwrap", text="Non-Orientable Unwrap", icon="UV")
 
         # Parameters
         row = col.row(align=True)
@@ -44,26 +42,22 @@ class NonOrientablePanel(bpy.types.Panel):
         # Settings box
         box = layout.box()
         box.label(text="Settings:")
-        box.prop(context.scene, "non_orientable_k_star",
-                text="k*", slider=True)
-        box.prop(context.scene, "non_orientable_verbose",
-                text="Verbose Output")
+        box.prop(context.scene, "non_orientable_k_star", text="k*", slider=True)
+        box.prop(context.scene, "non_orientable_verbose", text="Verbose Output")
 
         layout.separator()
 
         # Shader section
         col = layout.column(align=True)
         col.label(text="Rendering:")
-        col.operator("uv.create_parity_shader",
-                    text="Create Parity Shader",
-                    icon='SHADING_TEXTURE')
+        col.operator("uv.create_parity_shader", text="Create Parity Shader", icon="SHADING_TEXTURE")
 
         layout.separator()
 
         # Info section
-        if obj and obj.type == 'MESH' and "parity" in obj.data.attributes:
+        if obj and obj.type == "MESH" and "parity" in obj.data.attributes:
             box = layout.box()
-            box.label(text="Parity Info:", icon='CHECKMARK')
+            box.label(text="Parity Info:", icon="CHECKMARK")
             mesh = obj.data
             parity_attr = mesh.attributes["parity"]
 
@@ -78,7 +72,7 @@ class NonOrientablePanel(bpy.types.Panel):
         # Help section
         layout.separator()
         box = layout.box()
-        box.label(text="Help:", icon='QUESTION')
+        box.label(text="Help:", icon="QUESTION")
         box.label(text="1. Unwrap mesh")
         box.label(text="2. Create parity shader")
         box.label(text="3. Load textures")
@@ -94,13 +88,11 @@ def register_properties():
         default=0.721,
         min=0.0,
         max=1.0,
-        step=0.01
+        step=0.01,
     )
 
     bpy.types.Scene.non_orientable_verbose = bpy.props.BoolProperty(
-        name="Verbose",
-        description="Print progress to console",
-        default=False
+        name="Verbose", description="Print progress to console", default=False
     )
 
 

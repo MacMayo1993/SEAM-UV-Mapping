@@ -13,7 +13,7 @@ import numpy as np
 def assign_parity(
     triangles: np.ndarray,
     stitch_edges: set[tuple[int, int]],
-    edge_to_tris: dict[tuple[int, int], list[int]]
+    edge_to_tris: dict[tuple[int, int], list[int]],
 ) -> np.ndarray:
     """
     Assign parity to each triangle via flood-fill.
@@ -77,7 +77,7 @@ def verify_parity_consistency(
     triangles: np.ndarray,
     tri_parity: np.ndarray,
     stitch_edges: set[tuple[int, int]],
-    edge_to_tris: dict[tuple[int, int], list[int]]
+    edge_to_tris: dict[tuple[int, int], list[int]],
 ) -> bool:
     """
     Verify that parity assignment is consistent.
@@ -117,9 +117,7 @@ def verify_parity_consistency(
 
 
 def compute_parity_field_gradient(
-    triangles: np.ndarray,
-    tri_parity: np.ndarray,
-    edge_to_tris: dict[tuple[int, int], list[int]]
+    triangles: np.ndarray, tri_parity: np.ndarray, edge_to_tris: dict[tuple[int, int], list[int]]
 ) -> float:
     """
     Compute gradient of parity field (number of parity flips).

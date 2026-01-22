@@ -12,10 +12,7 @@ from collections import defaultdict
 import numpy as np
 
 
-def compute_gaussian_curvature(
-    vertices: np.ndarray,
-    triangles: np.ndarray
-) -> np.ndarray:
+def compute_gaussian_curvature(vertices: np.ndarray, triangles: np.ndarray) -> np.ndarray:
     """
     Compute discrete Gaussian curvature at each vertex using angle deficit.
 
@@ -95,10 +92,7 @@ def _compute_angle(v1: np.ndarray, v2: np.ndarray) -> float:
     return np.arccos(cos_angle)
 
 
-def compute_mean_curvature(
-    vertices: np.ndarray,
-    triangles: np.ndarray
-) -> np.ndarray:
+def compute_mean_curvature(vertices: np.ndarray, triangles: np.ndarray) -> np.ndarray:
     """
     Compute discrete mean curvature at each vertex.
 
@@ -172,11 +166,7 @@ def compute_mean_curvature(
         vertex_areas[v2] += area / 3.0
 
     # Normalize by area
-    mean_curvatures = np.divide(
-        mean_curvatures,
-        vertex_areas,
-        where=vertex_areas > 1e-10
-    )
+    mean_curvatures = np.divide(mean_curvatures, vertex_areas, where=vertex_areas > 1e-10)
 
     return mean_curvatures
 
