@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+
+    - name: Build addon package
+      run: |
+        cd addon
+        zip -r ../non_orientable_uv_addon_${{ github.ref_name }}.zip .
+        cd ..
+
+    - name: Build Python package
+      run: |
+        python -m build
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          non_orientable_uv_addon_${{ github.ref_name }}.zip
+          dist/*
+        body: |
+          ## Non-Orientable UV Unwrapping ${{ github.ref_name }}
+
+          ### Installation
+          - **Blender Addon**: Download `non_orientable_uv_addon_${{ github.ref_name }}.zip` and install in Blender
+          - **Python Package**: `pip install dist/non_orientable_uv-*.whl`
+
+          See [INSTALL.md](docs/INSTALL.md) for detailed instructions.
+
+          ### Changelog
+          See [CHANGELOG.md](CHANGELOG.md) for changes in this release.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish to PyPI
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+      run: |
+        twine upload dist/*
