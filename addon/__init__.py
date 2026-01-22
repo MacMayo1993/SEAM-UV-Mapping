@@ -17,21 +17,32 @@ bl_info = {
     "category": "UV",
 }
 
-import bpy
+try:
+    import bpy
 
-# Import modules
-from . import ui
+    # Import modules (only when running in Blender)
+    from . import ui
+
+    _HAS_BLENDER = True
+except ImportError:
+    # Allow importing core modules without Blender for testing/benchmarking
+    _HAS_BLENDER = False
+    bpy = None
 
 
 # Registration
 def register():
     """Register all addon classes"""
+    if not _HAS_BLENDER:
+        raise RuntimeError("Blender (bpy) is required for addon registration")
     ui.register()
     print("Non-Orientable UV Unwrapping addon registered")
 
 
 def unregister():
     """Unregister all addon classes"""
+    if not _HAS_BLENDER:
+        raise RuntimeError("Blender (bpy) is required for addon unregistration")
     ui.unregister()
     print("Non-Orientable UV Unwrapping addon unregistered")
 
