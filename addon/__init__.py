@@ -22,6 +22,7 @@ import bpy
 # Import modules
 from . import ui
 
+
 # Registration
 def register():
     """Register all addon classes"""

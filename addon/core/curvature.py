@@ -7,9 +7,9 @@ For closed polyhedral surfaces, the Gaussian curvature at a vertex is:
 This is known as the angle deficit formula.
 """
 
-import numpy as np
-from typing import Dict
 from collections import defaultdict
+
+import numpy as np
 
 
 def compute_gaussian_curvature(

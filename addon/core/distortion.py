@@ -5,15 +5,15 @@ Provides functions to measure angle distortion, area distortion,
 and UV space coverage.
 """
 
+
 import numpy as np
-from typing import Dict
 
 
 def compute_angle_distortion(
     vertices: np.ndarray,
     triangles: np.ndarray,
     uvs: np.ndarray
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """
     Compute angle distortion between 3D mesh and 2D UV layout.
 
@@ -147,7 +147,7 @@ def compute_stretch_metric(
     vertices: np.ndarray,
     triangles: np.ndarray,
     uvs: np.ndarray
-) -> Dict[str, float]:
+) -> dict[str, float]:
     """
     Compute stretch distortion (singular values of Jacobian).
 

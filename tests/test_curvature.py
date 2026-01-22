@@ -2,12 +2,9 @@
 Tests for Gaussian curvature computation.
 """
 
-import pytest
 import numpy as np
-from addon.core.curvature import (
-    compute_gaussian_curvature,
-    compute_mean_curvature
-)
+
+from addon.core.curvature import compute_gaussian_curvature, compute_mean_curvature
 
 
 class TestGaussianCurvature:

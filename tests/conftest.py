@@ -2,10 +2,10 @@
 Pytest configuration and fixtures for test suite.
 """
 
-import pytest
-import numpy as np
 from pathlib import Path
 
+import numpy as np
+import pytest
 
 # Test fixtures directory
 FIXTURES_DIR = Path(__file__).parent / "fixtures"

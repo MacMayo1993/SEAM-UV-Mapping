@@ -5,15 +5,15 @@ Each triangle is assigned a parity σ ∈ {+1, -1}, representing its orientation
 in the orientable double cover. Parity flips when crossing a stitch edge.
 """
 
-import numpy as np
-from typing import Set, Tuple, Dict, List
 from collections import defaultdict, deque
+
+import numpy as np
 
 
 def assign_parity(
     triangles: np.ndarray,
-    stitch_edges: Set[Tuple[int, int]],
-    edge_to_tris: Dict[Tuple[int, int], List[int]]
+    stitch_edges: set[tuple[int, int]],
+    edge_to_tris: dict[tuple[int, int], list[int]]
 ) -> np.ndarray:
     """
     Assign parity to each triangle via flood-fill.
@@ -76,8 +76,8 @@ def assign_parity(
 def verify_parity_consistency(
     triangles: np.ndarray,
     tri_parity: np.ndarray,
-    stitch_edges: Set[Tuple[int, int]],
-    edge_to_tris: Dict[Tuple[int, int], List[int]]
+    stitch_edges: set[tuple[int, int]],
+    edge_to_tris: dict[tuple[int, int], list[int]]
 ) -> bool:
     """
     Verify that parity assignment is consistent.
@@ -119,7 +119,7 @@ def verify_parity_consistency(
 def compute_parity_field_gradient(
     triangles: np.ndarray,
     tri_parity: np.ndarray,
-    edge_to_tris: Dict[Tuple[int, int], List[int]]
+    edge_to_tris: dict[tuple[int, int], list[int]]
 ) -> float:
     """
     Compute gradient of parity field (number of parity flips).

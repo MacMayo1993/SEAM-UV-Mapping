@@ -4,9 +4,7 @@ Blender UI integration for non-orientable UV unwrapping.
 
 import bpy
 
-from . import operators
-from . import panels
-from . import shader_nodes
+from . import operators, panels, shader_nodes
 
 # List of classes to register
 classes = (

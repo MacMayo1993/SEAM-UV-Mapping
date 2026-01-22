@@ -33,7 +33,7 @@ class NonOrientablePanel(bpy.types.Panel):
         col.label(text="Unwrap:")
 
         # Unwrap operator
-        unwrap_op = col.operator("uv.non_orientable_unwrap",
+        col.operator("uv.non_orientable_unwrap",
                                   text="Non-Orientable Unwrap",
                                   icon='UV')
 

@@ -4,9 +4,9 @@ Main topological UV atlas implementation.
 This module orchestrates the entire non-orientable UV unwrapping algorithm.
 """
 
-import numpy as np
-from typing import Set, Tuple, Dict, Optional
 from collections import defaultdict
+
+import numpy as np
 
 from .curvature import compute_gaussian_curvature
 from .parity import assign_parity
@@ -193,7 +193,7 @@ class TopologicalUVAtlas:
 
         return scores
 
-    def _select_stitch_edges(self, edge_scores: np.ndarray) -> Set[Tuple[int, int]]:
+    def _select_stitch_edges(self, edge_scores: np.ndarray) -> set[tuple[int, int]]:
         """
         Select top k* fraction of edges as stitch edges.
 
@@ -235,7 +235,7 @@ class TopologicalUVAtlas:
 
         return vertex_parities.astype(np.int32)
 
-    def get_stats(self) -> Dict[str, float]:
+    def get_stats(self) -> dict[str, float]:
         """
         Get statistics about the unwrapping.
 

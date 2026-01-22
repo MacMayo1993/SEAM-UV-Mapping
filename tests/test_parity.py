@@ -2,13 +2,14 @@
 Tests for parity assignment logic.
 """
 
-import pytest
-import numpy as np
 from collections import defaultdict
+
+import numpy as np
+
 from addon.core.parity import (
     assign_parity,
+    compute_parity_field_gradient,
     verify_parity_consistency,
-    compute_parity_field_gradient
 )
 
 
@@ -91,7 +92,7 @@ class TestParityAssignment:
     def test_connected_components(self):
         """Disconnected mesh components can have independent parities"""
         # Two separate triangles
-        vertices = np.array([
+        np.array([
             [0, 0, 0], [1, 0, 0], [0, 1, 0],  # Triangle 1
             [10, 0, 0], [11, 0, 0], [10, 1, 0]  # Triangle 2 (disconnected)
         ], dtype=np.float64)
