@@ -17,8 +17,12 @@ def compute_gaussian_curvature(vertices: np.ndarray, triangles: np.ndarray) -> n
     Compute discrete Gaussian curvature at each vertex using angle deficit.
 
     The angle deficit at a vertex v is:
-        K(v) = 2π - Σ θᵢ
+        K(v) = 2π - Σ θᵢ  (interior vertices)
+        K(v) = 0          (boundary vertices - intrinsic curvature undefined)
     where θᵢ are the angles at v in adjacent triangles.
+
+    For boundary vertices, we set curvature to 0 as the angle deficit includes
+    boundary geometry information that is not intrinsic curvature.
 
     Args:
         vertices: (N, 3) array of vertex positions
@@ -32,7 +36,22 @@ def compute_gaussian_curvature(vertices: np.ndarray, triangles: np.ndarray) -> n
           Triangulated 2-Manifolds" (2003)
     """
     num_vertices = len(vertices)
-    curvatures = np.full(num_vertices, 2.0 * np.pi)  # Start with 2π
+
+    # Detect boundary vertices
+    edge_count = defaultdict(int)
+    for tri in triangles:
+        for i in range(3):
+            edge = tuple(sorted([tri[i], tri[(i + 1) % 3]]))
+            edge_count[edge] += 1
+
+    # A vertex is on the boundary if any of its edges appears only once
+    boundary_edges = {e for e, count in edge_count.items() if count == 1}
+    boundary_vertices = set()
+    for edge in boundary_edges:
+        boundary_vertices.update(edge)
+
+    # Initialize curvatures: 2π for interior, will be set to 0 for boundary later
+    curvatures = np.full(num_vertices, 2.0 * np.pi)
 
     # Build vertex-to-triangles adjacency
     vertex_to_tris = defaultdict(list)
@@ -58,6 +77,10 @@ def compute_gaussian_curvature(vertices: np.ndarray, triangles: np.ndarray) -> n
         curvatures[v0] -= angle0
         curvatures[v1] -= angle1
         curvatures[v2] -= angle2
+
+    # Set boundary vertex curvatures to 0 (intrinsic curvature undefined)
+    for v in boundary_vertices:
+        curvatures[v] = 0.0
 
     return curvatures
 
@@ -96,8 +119,7 @@ def compute_mean_curvature(vertices: np.ndarray, triangles: np.ndarray) -> np.nd
     """
     Compute discrete mean curvature at each vertex.
 
-    Uses cotangent formula. This is optional and not used in the main algorithm,
-    but provided for completeness.
+    Uses cotangent Laplacian formula: H = ||Laplacian(x)|| / (2 * Area)
 
     Args:
         vertices: (N, 3) array of vertex positions
@@ -107,7 +129,7 @@ def compute_mean_curvature(vertices: np.ndarray, triangles: np.ndarray) -> np.nd
         (N,) array of mean curvature values
     """
     num_vertices = len(vertices)
-    mean_curvatures = np.zeros(num_vertices)
+    laplacian = np.zeros((num_vertices, 3))
     vertex_areas = np.zeros(num_vertices)
 
     # Build edges
@@ -126,8 +148,8 @@ def compute_mean_curvature(vertices: np.ndarray, triangles: np.ndarray) -> np.nd
             if v1 in tri and v2 in tri:
                 edge_tris.append(tri)
 
-        if len(edge_tris) != 2:
-            continue  # Boundary edge
+        if len(edge_tris) == 0:
+            continue
 
         # Compute cotangent weights
         cot_sum = 0.0
@@ -144,16 +166,21 @@ def compute_mean_curvature(vertices: np.ndarray, triangles: np.ndarray) -> np.nd
             e2 = p2 - p_opp
 
             # Cotangent = cos/sin
-            cos_angle = np.dot(e1, e2) / (np.linalg.norm(e1) * np.linalg.norm(e2))
-            sin_angle = np.sqrt(1.0 - cos_angle**2)
+            norm_e1 = np.linalg.norm(e1)
+            norm_e2 = np.linalg.norm(e2)
 
-            if sin_angle > 1e-10:
-                cot_sum += cos_angle / sin_angle
+            if norm_e1 > 1e-10 and norm_e2 > 1e-10:
+                cos_angle = np.dot(e1, e2) / (norm_e1 * norm_e2)
+                cos_angle = np.clip(cos_angle, -1.0, 1.0)
+                sin_angle = np.sqrt(1.0 - cos_angle**2)
 
-        # Laplacian operator
+                if sin_angle > 1e-10:
+                    cot_sum += cos_angle / sin_angle
+
+        # Laplacian contribution: L(v_i) = 0.5 * Σ(cot_weights * (v_j - v_i))
         edge_vec = vertices[v2] - vertices[v1]
-        mean_curvatures[v1] += 0.5 * cot_sum * np.linalg.norm(edge_vec)
-        mean_curvatures[v2] += 0.5 * cot_sum * np.linalg.norm(edge_vec)
+        laplacian[v1] += 0.5 * cot_sum * edge_vec
+        laplacian[v2] += 0.5 * cot_sum * (-edge_vec)
 
     # Compute vertex areas (Voronoi regions)
     for tri in triangles:
@@ -165,8 +192,28 @@ def compute_mean_curvature(vertices: np.ndarray, triangles: np.ndarray) -> np.nd
         vertex_areas[v1] += area / 3.0
         vertex_areas[v2] += area / 3.0
 
-    # Normalize by area
-    mean_curvatures = np.divide(mean_curvatures, vertex_areas, where=vertex_areas > 1e-10)
+    # Detect boundary vertices (same as in compute_gaussian_curvature)
+    edge_count = defaultdict(int)
+    for tri in triangles:
+        for i in range(3):
+            edge = tuple(sorted([tri[i], tri[(i + 1) % 3]]))
+            edge_count[edge] += 1
+
+    boundary_edges = {e for e, count in edge_count.items() if count == 1}
+    boundary_vertices = set()
+    for edge in boundary_edges:
+        boundary_vertices.update(edge)
+
+    # Mean curvature: H = ||L(v)|| / (2 * Area)
+    mean_curvatures = np.zeros(num_vertices)
+    for v in range(num_vertices):
+        if v in boundary_vertices:
+            # Set boundary vertices to 0 (undefined for open surfaces)
+            mean_curvatures[v] = 0.0
+        elif vertex_areas[v] > 1e-10:
+            mean_curvatures[v] = np.linalg.norm(laplacian[v]) / (2.0 * vertex_areas[v])
+        else:
+            mean_curvatures[v] = 0.0
 
     return mean_curvatures
 
