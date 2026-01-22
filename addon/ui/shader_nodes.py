@@ -2,13 +2,13 @@
 Shader node utilities for parity-aware rendering.
 """
 
+
 import bpy
-from typing import Optional
 
 
 def create_parity_aware_material(
     name: str = "ParityMaterial",
-    texture_path: Optional[str] = None
+    texture_path: str | None = None
 ) -> bpy.types.Material:
     """
     Create a complete parity-aware material.
@@ -24,7 +24,6 @@ def create_parity_aware_material(
     mat.use_nodes = True
 
     nodes = mat.node_tree.nodes
-    links = mat.node_tree.links
 
     # Clear default nodes
     nodes.clear()
@@ -37,7 +36,7 @@ def create_parity_aware_material(
 
 def _build_parity_shader_tree(
     node_tree: bpy.types.NodeTree,
-    texture_path: Optional[str] = None
+    texture_path: str | None = None
 ):
     """
     Build parity-aware shader node tree.
@@ -74,7 +73,7 @@ def _build_parity_shader_tree(
         try:
             img = bpy.data.images.load(texture_path)
             tex_node.image = img
-        except:
+        except Exception:
             pass
 
     # Mix RGB (for UV selection based on parity)

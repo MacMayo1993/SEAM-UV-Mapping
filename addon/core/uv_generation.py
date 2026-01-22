@@ -5,9 +5,9 @@ Generates UV coordinates using spherical parameterization, then applies
 antipodal correction for negative-parity vertices.
 """
 
+
 import numpy as np
 from scipy.optimize import minimize
-from typing import Optional
 
 
 def generate_uvs(
@@ -124,8 +124,8 @@ def optimize_uvs_for_distortion(
             v0, v1, v2 = tri
 
             # 3D edges
-            e1_3d = vertices[v1] - vertices[v0]
-            e2_3d = vertices[v2] - vertices[v0]
+            vertices[v1] - vertices[v0]
+            vertices[v2] - vertices[v0]
 
             # 2D edges
             e1_2d = uvs[v1] - uvs[v0]

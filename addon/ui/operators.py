@@ -2,10 +2,10 @@
 Blender operators for non-orientable UV unwrapping.
 """
 
-import bpy
+
 import bmesh
+import bpy
 import numpy as np
-from typing import Set
 
 from ..core.topology import TopologicalUVAtlas
 

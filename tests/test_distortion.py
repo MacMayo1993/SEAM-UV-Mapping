@@ -2,13 +2,13 @@
 Tests for UV distortion metrics.
 """
 
-import pytest
 import numpy as np
+
 from addon.core.distortion import (
     compute_angle_distortion,
     compute_area_distortion,
+    compute_stretch_metric,
     compute_uv_coverage,
-    compute_stretch_metric
 )
 
 
@@ -116,10 +116,6 @@ class TestUVCoverage:
 
     def test_full_coverage(self):
         """Full UV square should give 100% coverage"""
-        vertices = np.array([
-            [0, 0, 0], [1, 0, 0], [0, 1, 0], [1, 1, 0]
-        ], dtype=np.float64)
-
         triangles = np.array([
             [0, 1, 2],
             [1, 3, 2]
@@ -137,10 +133,6 @@ class TestUVCoverage:
 
     def test_half_coverage(self):
         """Half of UV square should give 50% coverage"""
-        vertices = np.array([
-            [0, 0, 0], [0.5, 0, 0], [0, 1, 0]
-        ], dtype=np.float64)
-
         triangles = np.array([[0, 1, 2]], dtype=np.int32)
 
         # Triangle covering half of UV space
@@ -155,10 +147,6 @@ class TestUVCoverage:
 
     def test_small_coverage(self):
         """Small triangle should have low coverage"""
-        vertices = np.array([
-            [0, 0, 0], [0.1, 0, 0], [0, 0.1, 0]
-        ], dtype=np.float64)
-
         triangles = np.array([[0, 1, 2]], dtype=np.int32)
 
         # Small UV triangle
