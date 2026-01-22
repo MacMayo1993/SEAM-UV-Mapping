@@ -37,9 +37,9 @@ class TestParityAssignment:
         tri_parity = assign_parity(triangles, stitch_edges, edge_to_tris)
 
         # All parities should be the same
-        assert np.all(tri_parity == tri_parity[0]), (
-            "Without stitch edges, all triangles should have same parity"
-        )
+        assert np.all(
+            tri_parity == tri_parity[0]
+        ), "Without stitch edges, all triangles should have same parity"
 
     def test_all_stitch_edges(self, sphere_mesh_simple):
         """With all edges as stitches, adjacent triangles should flip"""
@@ -64,9 +64,9 @@ class TestParityAssignment:
         # Verify parities flip across all edges
         for edge, tris in edge_to_tris.items():
             if len(tris) == 2:
-                assert tri_parity[tris[0]] != tri_parity[tris[1]], (
-                    f"Parity should flip across stitch edge {edge}"
-                )
+                assert (
+                    tri_parity[tris[0]] != tri_parity[tris[1]]
+                ), f"Parity should flip across stitch edge {edge}"
 
     def test_parity_values(self, sphere_mesh_simple):
         """Parity values should be ±1"""
@@ -88,9 +88,9 @@ class TestParityAssignment:
 
         # Check values are ±1
         unique_parities = np.unique(tri_parity)
-        assert set(unique_parities).issubset({-1, 1}), (
-            f"Parity values should be ±1, got {unique_parities}"
-        )
+        assert set(unique_parities).issubset(
+            {-1, 1}
+        ), f"Parity values should be ±1, got {unique_parities}"
 
     def test_connected_components(self):
         """Disconnected mesh components can have independent parities"""

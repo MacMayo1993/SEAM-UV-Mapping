@@ -114,9 +114,9 @@ class TestUVCoverage:
 
         coverage = compute_uv_coverage(triangles, uvs)
 
-        assert abs(coverage - 100.0) < 1.0, (
-            f"Full square should be ~100% coverage, got {coverage:.1f}%"
-        )
+        assert (
+            abs(coverage - 100.0) < 1.0
+        ), f"Full square should be ~100% coverage, got {coverage:.1f}%"
 
     def test_half_coverage(self):
         """Half of UV square should give 50% coverage"""

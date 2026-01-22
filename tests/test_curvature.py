@@ -23,9 +23,9 @@ class TestGaussianCurvature:
         # Total curvature ≈ 4π (accounting for discretization)
         total_K = np.sum(K)
         expected = 4 * np.pi
-        assert abs(total_K - expected) < 1.0, (
-            f"Sphere curvature should integrate to 4π, got {total_K:.2f}"
-        )
+        assert (
+            abs(total_K - expected) < 1.0
+        ), f"Sphere curvature should integrate to 4π, got {total_K:.2f}"
 
     def test_plane_zero_curvature(self, plane_mesh):
         """Flat plane should have zero curvature"""
@@ -51,9 +51,9 @@ class TestGaussianCurvature:
 
         K = compute_gaussian_curvature(vertices, triangles)
 
-        assert K.shape == (len(vertices),), (
-            f"Expected {len(vertices)} curvature values, got {len(K)}"
-        )
+        assert K.shape == (
+            len(vertices),
+        ), f"Expected {len(vertices)} curvature values, got {len(K)}"
 
     def test_curvature_finite(self, sphere_mesh_simple):
         """Curvature values should be finite"""
